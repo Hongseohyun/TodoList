@@ -1,7 +1,22 @@
-const images = ["0.jpg", "1.jpg","2.jpg"];
-const chosenImage = images[Math.floor(Math.random() * images.length)];
+const date = new Date();
+const hours = date.getHours();
 
+const images = ["morning.png", "afternoon.jpg", "night.png"];
+
+let chosenImage;
+if(7>=hours && hours>=11){
+    chosenImage= images[0]
+    console.log(hours)
+}else if(hours>11){
+    chosenImage= images[1]
+    console.log(hours)
+}else{
+    chosenImage= images[2]
+    console.log(hours)
+};
+
+// 요소를 생성
 const bgImage = document.createElement("img");
-bgImage.src = `img/${chosenImage}`
+bgImage.src = `IMG/${chosenImage}`;
 
-document.body.appendChild(bgImage)
+document.body.appendChild(bgImage);

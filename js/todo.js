@@ -1,52 +1,61 @@
-const toDoForm =document.getElementById("todo-form")
-const toDoInput = document.querySelector("#todo-form input")
-const toDoList = document.getElementById("todo-list")
-
-const TODOS_KEY = "todos"
+const toDoForm = document.getElementById("todo-form");
+const toDoList = document.getElementById("todo-list");
+const toDoInput = toDoForm.querySelector("input");
 
 let toDos = [];
+const TODOS_KEY = "todos"
 
-
-function saveTodos(event){
-    localStorage.setItem(TODOS_KEY, JSON.stringify(toDos))
+function saveToDos(){
+    // 문자열로 저장
+    localStorage.setItem(TODOS_KEY, JSON.stringify(toDos));
 }
+
 function deleteToDo(event){
-    const li = event.target.parentElement;
+    const li = event.target.parentElement; 
     li.remove();
+    toDos = toDos.filter(toDo => toDo.id !== parseInt(li.id));
+    saveToDos  ();
 }
 
-function paintTodo(newTodo){
-    const li = document.createElement("li")
+function  paintToDo(newTodo){
+    const li = document.createElement("li");
     li.id = newTodo.id;
-    const span = document.createElement("span")
+    const span = document.createElement("span");
     span.innerText = newTodo.text;
-    const button = document.createElement("button")
-    button.innerText = "❌"
+
+    const button = document.createElement("button");
+    button.innerText = "✖";
     button.addEventListener("click", deleteToDo)
+    // li를 span안에 집어넣음 (자식으로 상속)
     li.appendChild(span);
-    li.appendChild(button)
+    li.appendChild(button);
+    // HTML의 ul에 li를 추가
     toDoList.appendChild(li);
 }
 
-function handleToDoSubmit(event){
+function handleToDo(event){
     event.preventDefault();
+    // input의 vlalue를 새로운 변수에 복사
     const newTodo = toDoInput.value;
-    toDoInput.value ="";
-    const newTodoObj ={
-        text:newTodo,
-        id:Date.now()
+    toDoInput.value = "";
+
+    const newToDoObj = {
+        text: newTodo,
+        id: Date.now(),
     }
-    toDos.push(newTodoObj)
-    paintTodo(newTodoObj)
-    saveTodos();
+    toDos.push(newToDoObj);
+    paintToDo(newToDoObj);
+    saveToDos();
 }
 
-toDoForm.addEventListener("submit",handleToDoSubmit)
+toDoForm.addEventListener("submit", handleToDo);
 
-const savedToDos = localStorage.getItem(TODOS_KEY)
+const savedToDos = localStorage.getItem(TODOS_KEY);
 
-if(savedToDos != null){
-    const parsedToDos = JSON.parse(savedToDos)
-    toDos = parsedToDos;
-    parsedToDos.forEach(paintTodo)
+if(savedToDos){
+    const parseToDos = JSON.parse(savedToDos);
+    toDos = parseToDos;
+    // forEach : paintToDo를 parsedToDos 배열의 요소마다 실행
+    // paintToDo를 기본적으로 실행
+    parseToDos.forEach(paintToDo);
 }
